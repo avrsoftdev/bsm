@@ -1,6 +1,9 @@
 #!/bin/bash
 set -e
 
+# Fix git dubious ownership issue
+git config --global --add safe.directory '*'
+
 # Download and install Flutter
 echo "Installing Flutter..."
 FLUTTER_URL="https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_3.22.0-stable.tar.xz"
