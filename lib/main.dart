@@ -1,7 +1,5 @@
 import 'package:web/web.dart' as web;
-import 'dart:js_interop';
 import 'dart:ui_web' as ui_web;
-import 'package:flutter_web_plugins/flutter_web_plugins.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -69,6 +67,14 @@ class _HomePageState extends State<HomePage> {
   final GlobalKey _membersKey = GlobalKey();
   final GlobalKey _blogsKey = GlobalKey();
   final GlobalKey _videosKey = GlobalKey();
+  final GlobalKey _contactKey = GlobalKey();
+
+  // Contact Form Fields
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _messageController = TextEditingController();
+  bool _isSubmitting = false;
 
   void _scrollToSection(GlobalKey key) {
     final context = key.currentContext;
@@ -100,6 +106,17 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     // Start the marquee after first frame so the controller has dimensions
     WidgetsBinding.instance.addPostFrameCallback((_) => _startMarquee());
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _emailController.dispose();
+    _phoneController.dispose();
+    _messageController.dispose();
+    _scrollController.dispose();
+    _marqueeController.dispose();
+    super.dispose();
   }
 
   @override
@@ -144,6 +161,7 @@ class _HomePageState extends State<HomePage> {
           TextButton(onPressed: () => _scrollToSection(_membersKey), child: Text(getText('Members', 'सदस्य'), style: const TextStyle(color: Colors.orange))),
           TextButton(onPressed: () => _scrollToSection(_blogsKey), child: Text(getText('Blogs', 'ब्लॉग'), style: const TextStyle(color: Colors.orange))),
           TextButton(onPressed: () => _scrollToSection(_videosKey), child: Text(getText('Videos', 'वीडियो'), style: const TextStyle(color: Colors.orange))),
+          TextButton(onPressed: () => _scrollToSection(_contactKey), child: Text(getText('Contact', 'संपर्क'), style: const TextStyle(color: Colors.orange))),
           const SizedBox(width: 16),
         ],
       ),
@@ -162,7 +180,7 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
               child: Container(
-                color: Colors.black.withOpacity(0.6),
+                color: Colors.black.withValues(alpha: 0.6),
                 child: Center(
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -388,6 +406,13 @@ Bhartiya Sadbhavna Manch stands as a platform committed to nation-building, soci
               ),
             ),
 
+            // Contact Section
+            Container(
+              key: _contactKey,
+              padding: const EdgeInsets.symmetric(vertical: 80, horizontal: 40),
+              child: _buildContactForm(),
+            ),
+
             // Footer
             Container(
               padding: const EdgeInsets.all(50),
@@ -579,6 +604,249 @@ Bhartiya Sadbhavna Manch stands as a platform committed to nation-building, soci
           aspectRatio: 16 / 9,
           child: HtmlElementView(viewType: 'youtube-$videoId'),
         ),
+      ),
+    );
+  }
+
+  // Beautiful Contact Form
+  Widget _buildContactForm() {
+    return Column(
+      children: [
+        Text(
+          getText('Get In Touch', 'हमसे संपर्क करें'),
+          style: const TextStyle(fontSize: 36, fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 20),
+        Text(
+          getText('We would love to hear from you. Send us a message and we\'ll respond as soon as possible.', 'हम आपसे सुनना पसंद करेंगे। हमें एक संदेश भेजें और हम जल्द से जल्द जवाब देंगे।'),
+          style: TextStyle(fontSize: 18, color: Colors.grey[700]),
+          textAlign: TextAlign.center,
+        ),
+        const SizedBox(height: 60),
+        
+        // Contact Form Container
+        Container(
+          constraints: const BoxConstraints(maxWidth: 600),
+          padding: const EdgeInsets.all(40),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withValues(alpha: 0.2),
+                blurRadius: 15,
+                offset: const Offset(0, 8),
+              ),
+            ],
+          ),
+          child: Form(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                // Name Field
+                Text(
+                  getText('Name', 'नाम'),
+                  style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.black87),
+                ),
+                const SizedBox(height: 8),
+                TextField(
+                  controller: _nameController,
+                  decoration: InputDecoration(
+                    hintText: getText('Enter your full name', 'अपना पूरा नाम दर्ज करें'),
+                    hintStyle: TextStyle(color: Colors.grey[400]),
+                    filled: true,
+                    fillColor: Colors.grey.shade50,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: BorderSide(color: Colors.grey.shade300),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: BorderSide(color: Colors.grey.shade300),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: const BorderSide(color: Color.fromARGB(255, 210, 105, 25), width: 2),
+                    ),
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                  ),
+                ),
+                const SizedBox(height: 24),
+
+                // Email Field
+                Text(
+                  getText('Email Address', 'ईमेल पता'),
+                  style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.black87),
+                ),
+                const SizedBox(height: 8),
+                TextField(
+                  controller: _emailController,
+                  keyboardType: TextInputType.emailAddress,
+                  decoration: InputDecoration(
+                    hintText: getText('Enter your email address', 'अपना ईमेल पता दर्ज करें'),
+                    hintStyle: TextStyle(color: Colors.grey[400]),
+                    filled: true,
+                    fillColor: Colors.grey.shade50,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: BorderSide(color: Colors.grey.shade300),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: BorderSide(color: Colors.grey.shade300),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: const BorderSide(color: Color.fromARGB(255, 210, 105, 25), width: 2),
+                    ),
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                  ),
+                ),
+                const SizedBox(height: 24),
+
+                // Phone Number Field
+                Text(
+                  getText('Phone Number', 'फोन नंबर'),
+                  style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.black87),
+                ),
+                const SizedBox(height: 8),
+                TextField(
+                  controller: _phoneController,
+                  keyboardType: TextInputType.phone,
+                  decoration: InputDecoration(
+                    hintText: getText('Enter your phone number', 'अपना फोन नंबर दर्ज करें'),
+                    hintStyle: TextStyle(color: Colors.grey[400]),
+                    filled: true,
+                    fillColor: Colors.grey.shade50,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: BorderSide(color: Colors.grey.shade300),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: BorderSide(color: Colors.grey.shade300),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: const BorderSide(color: Color.fromARGB(255, 210, 105, 25), width: 2),
+                    ),
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                  ),
+                ),
+                const SizedBox(height: 24),
+
+                // Message Field
+                Text(
+                  getText('Message', 'संदेश'),
+                  style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.black87),
+                ),
+                const SizedBox(height: 8),
+                TextField(
+                  controller: _messageController,
+                  maxLines: 6,
+                  decoration: InputDecoration(
+                    hintText: getText('Tell us more about your inquiry...', 'अपनी जांच के बारे में हमें और बताएं...'),
+                    hintStyle: TextStyle(color: Colors.grey[400]),
+                    filled: true,
+                    fillColor: Colors.grey.shade50,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: BorderSide(color: Colors.grey.shade300),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: BorderSide(color: Colors.grey.shade300),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: const BorderSide(color: Color.fromARGB(255, 210, 105, 25), width: 2),
+                    ),
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                  ),
+                ),
+                const SizedBox(height: 32),
+
+                // Submit Button
+                ElevatedButton(
+                  onPressed: _isSubmitting ? null : _handleSubmit,
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    backgroundColor: const Color.fromARGB(255, 210, 105, 25),
+                    disabledBackgroundColor: Colors.grey.shade400,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                  child: _isSubmitting
+                      ? SizedBox(
+                          height: 20,
+                          width: 20,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            valueColor: AlwaysStoppedAnimation<Color>(Colors.white.withValues(alpha: 0.8)),
+                          ),
+                        )
+                      : Text(
+                          getText('Send Message', 'संदेश भेजें'),
+                          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.white),
+                        ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  // Handle Contact Form Submission
+  void _handleSubmit() {
+    final name = _nameController.text.trim();
+    final email = _emailController.text.trim();
+    final phone = _phoneController.text.trim();
+    final message = _messageController.text.trim();
+
+    // Validation
+    if (name.isEmpty) {
+      _showSnackBar(getText('Please enter your name', 'कृपया अपना नाम दर्ज करें'));
+      return;
+    }
+    if (email.isEmpty || !email.contains('@')) {
+      _showSnackBar(getText('Please enter a valid email address', 'कृपया एक वैध ईमेल पता दर्ज करें'));
+      return;
+    }
+    if (phone.isEmpty) {
+      _showSnackBar(getText('Please enter your phone number', 'कृपया अपना फोन नंबर दर्ज करें'));
+      return;
+    }
+    if (message.isEmpty) {
+      _showSnackBar(getText('Please enter your message', 'कृपया अपना संदेश दर्ज करें'));
+      return;
+    }
+
+    setState(() => _isSubmitting = true);
+
+    // Simulate API call
+    Future.delayed(const Duration(seconds: 2), () {
+      if (mounted) {
+        setState(() => _isSubmitting = false);
+        _showSnackBar(getText('Thank you! Your message has been sent successfully.', 'धन्यवाद! आपका संदेश सफलतापूर्वक भेज दिया गया है।'), isSuccess: true);
+        
+        // Clear form
+        _nameController.clear();
+        _emailController.clear();
+        _phoneController.clear();
+        _messageController.clear();
+      }
+    });
+  }
+
+  void _showSnackBar(String message, {bool isSuccess = false}) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message, style: const TextStyle(color: Colors.white)),
+        backgroundColor: isSuccess ? Colors.green : Colors.red,
+        duration: const Duration(seconds: 3),
       ),
     );
   }
