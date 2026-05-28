@@ -62,6 +62,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final ScrollController _scrollController = ScrollController();
+  final ScrollController _marqueeController = ScrollController();
 
   final GlobalKey _homeKey = GlobalKey();
   final GlobalKey _historyKey = GlobalKey();
@@ -92,6 +93,13 @@ class _HomePageState extends State<HomePage> {
         ..style.border = 'none'
         ..allowFullscreen = true,
     );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    // Start the marquee after first frame so the controller has dimensions
+    WidgetsBinding.instance.addPostFrameCallback((_) => _startMarquee());
   }
 
   @override
@@ -226,6 +234,9 @@ Bhartiya Sadbhavna Manch stands as a platform committed to nation-building, soci
                     style: const TextStyle(fontSize: 18, height: 1.7),
                     textAlign: TextAlign.center,
                   ),
+                  const SizedBox(height: 30),
+                  // Scrolling images marquee (left-to-right loop)
+                  _buildImageMarquee(),
                 ],
               ),
             ),
@@ -398,6 +409,69 @@ Bhartiya Sadbhavna Manch stands as a platform committed to nation-building, soci
   }
 
   // Beautiful Member Card
+  final List<String> _carouselImages = [
+    'assets/images/20241125_144749.jpg',
+    'assets/images/20241125_144811.jpg',
+    'assets/images/20241125_154940.jpg',
+    'assets/images/20250407_133558.jpg',
+    'assets/images/20250407_154704.jpg',
+    'assets/images/20250425_121236.jpg',
+    'assets/images/IMG-20241125-WA0091.jpg',
+    'assets/images/IMG-20241125-WA0097.jpg',
+    'assets/images/IMG-20241125-WA0098.jpg',
+    'assets/images/Screenshot_20250427_214530_WhatsApp.jpg',
+    'assets/images/rss1.jpeg',
+    'assets/images/rss2.jpeg',
+  ];
+
+  void _startMarquee() async {
+    // Auto-scroll marquee from left to right, looping by duplicating items
+    try {
+      // wait a moment for layout
+      await Future.delayed(const Duration(milliseconds: 200));
+      while (mounted) {
+        if (!_marqueeController.hasClients) {
+          await Future.delayed(const Duration(milliseconds: 300));
+          continue;
+        }
+        final max = _marqueeController.position.maxScrollExtent;
+        if (max <= 0) {
+          await Future.delayed(const Duration(milliseconds: 500));
+          continue;
+        }
+        // speed: ~30 px/sec
+        final durationMs = (max / 30 * 1000).toInt().clamp(1000, 60000);
+        await _marqueeController.animateTo(max, duration: Duration(milliseconds: durationMs), curve: Curves.linear);
+        if (!mounted) break;
+        _marqueeController.jumpTo(0);
+        await Future.delayed(const Duration(milliseconds: 300));
+      }
+    } catch (e) {
+      // ignore - controller disposed or animation cancelled
+    }
+  }
+
+  Widget _buildImageMarquee() {
+    final items = [..._carouselImages, ..._carouselImages];
+    return SizedBox(
+      height: 140,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(8),
+        child: ListView.builder(
+          controller: _marqueeController,
+          scrollDirection: Axis.horizontal,
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: items.length,
+          itemBuilder: (context, index) {
+            return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Image.asset(items[index], height: 120, width: 220, fit: BoxFit.cover, errorBuilder: (c,e,st) => const SizedBox(width: 220, height: 120, child: ColoredBox(color: Colors.black12))),
+            );
+          },
+        ),
+      ),
+    );
+  }
   Widget _buildMemberCard({
     required String nameEn,
     required String nameHi,
