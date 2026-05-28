@@ -1,4 +1,4 @@
-name: web_bsm
+﻿name: web_bsm
 description: "A new Flutter project."
 publish_to: 'none' 
 version: 1.0.0+1
@@ -23,9 +23,8 @@ dev_dependencies:
   flutter_lints: ^5.0.0
 
 
-flutter:
-assets:
-    - assets/images/
-  uses-material-design: true
 
- 
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/images/

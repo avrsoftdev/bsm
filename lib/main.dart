@@ -102,9 +102,24 @@ class _HomePageState extends State<HomePage> {
 
     return Scaffold(
       appBar: AppBar(
+        leading: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Image.asset(
+            'assets/images/logo.jpeg',
+            width: 36,
+            height: 36,
+            fit: BoxFit.contain,
+            errorBuilder: (context, error, stackTrace) => Image.asset(
+              'assets/images/logo.jpeg',
+              width: 36,
+              height: 36,
+              fit: BoxFit.contain,
+            ),
+          ),
+        ),
         title: Text(getText('Bhartiya Sadbhavna Manch', 'भारतीय सद्भावना मंच')),
-        backgroundColor: const Color.fromARGB(255, 210, 105, 25),
-        foregroundColor: Colors.white,
+        backgroundColor: const Color.fromARGB(255, 255, 255, 255),
+        foregroundColor: const Color.fromARGB(255, 210, 105, 25),
         actions: [
           PopupMenuButton<String>(
             icon: const Icon(Icons.language),
@@ -116,11 +131,11 @@ class _HomePageState extends State<HomePage> {
               const PopupMenuItem(value: 'hi', child: Text('हिंदी')),
             ],
           ),
-          TextButton(onPressed: () => _scrollToSection(_homeKey), child: Text(getText('Home', 'होम'), style: const TextStyle(color: Colors.white))),
-          TextButton(onPressed: () => _scrollToSection(_historyKey), child: Text(getText('History', 'इतिहास'), style: const TextStyle(color: Colors.white))),
-          TextButton(onPressed: () => _scrollToSection(_membersKey), child: Text(getText('Members', 'सदस्य'), style: const TextStyle(color: Colors.white))),
-          TextButton(onPressed: () => _scrollToSection(_blogsKey), child: Text(getText('Blogs', 'ब्लॉग'), style: const TextStyle(color: Colors.white))),
-          TextButton(onPressed: () => _scrollToSection(_videosKey), child: Text(getText('Videos', 'वीडियो'), style: const TextStyle(color: Colors.white))),
+          TextButton(onPressed: () => _scrollToSection(_homeKey), child: Text(getText('Home', 'होम'), style: const TextStyle(color: Colors.orange))),
+          TextButton(onPressed: () => _scrollToSection(_historyKey), child: Text(getText('History', 'इतिहास'), style: const TextStyle(color: Colors.orange))),
+          TextButton(onPressed: () => _scrollToSection(_membersKey), child: Text(getText('Members', 'सदस्य'), style: const TextStyle(color: Colors.orange))),
+          TextButton(onPressed: () => _scrollToSection(_blogsKey), child: Text(getText('Blogs', 'ब्लॉग'), style: const TextStyle(color: Colors.orange))),
+          TextButton(onPressed: () => _scrollToSection(_videosKey), child: Text(getText('Videos', 'वीडियो'), style: const TextStyle(color: Colors.orange))),
           const SizedBox(width: 16),
         ],
       ),
@@ -242,7 +257,7 @@ Bhartiya Sadbhavna Manch stands as a platform committed to nation-building, soci
                         nameHi: 'डॉ. इंद्रेश कुमार देवर्षि',
                         positionEn: 'Patron',
                         positionHi: 'संरक्षक',
-                        imageUrl: 'https://picsum.photos/id/64/300/300',
+                        imagePath: 'assets/images/indreshi.jpg',
                         bioEn: 'Senior Pracharak, Rashtriya Swayamsevak Sangh',
                         bioHi: 'वरिष्ठ प्रचारक, राष्ट्रीय स्वयंसेवक संघ',
                       ),
@@ -251,7 +266,7 @@ Bhartiya Sadbhavna Manch stands as a platform committed to nation-building, soci
                         nameHi: 'साध्वी माँ कल्पना अरुंधति',
                         positionEn: 'National Coordinator',
                         positionHi: 'राष्ट्रीय संयोजिका',
-                        imageUrl: 'https://picsum.photos/id/65/300/300',
+                        imagePath: 'assets/images/maa.png',
                         bioEn: 'Spiritual guide and inspiration',
                         bioHi: 'आध्यात्मिक मार्गदर्शक एवं प्रेरणा स्रोत',
                       ),
@@ -260,7 +275,7 @@ Bhartiya Sadbhavna Manch stands as a platform committed to nation-building, soci
                         nameHi: 'सी ए डॉ. अर्जुन मुंडरा',
                         positionEn: 'Chief Advisor',
                         positionHi: 'मुख्य सलाहकार',
-                        imageUrl: 'https://picsum.photos/id/66/300/300',
+                        imagePath: 'assets/images/arjun.jpg',
                         bioEn: 'Leading policies and operations',
                         bioHi: 'नीतियों और कार्यप्रणाली का नेतृत्व',
                       ),
@@ -269,7 +284,7 @@ Bhartiya Sadbhavna Manch stands as a platform committed to nation-building, soci
                         nameHi: 'आकाश डोडवाल',
                         positionEn: 'National Media Convener',
                         positionHi: 'राष्ट्रीय मीडिया प्रभारी',
-                        imageUrl: 'https://picsum.photos/id/67/300/300',
+                        imagePath: 'assets/images/akash.png',
                         bioEn: 'Managing Media and Communications',
                         bioHi: 'संचालन - मीडिया और संचार प्रबंधन',
                       ),
@@ -278,7 +293,7 @@ Bhartiya Sadbhavna Manch stands as a platform committed to nation-building, soci
                         nameHi: 'विश्वजीत सिंह',
                         positionEn: 'National Convener- Youth Cell',
                         positionHi: 'राष्ट्रीय सयोंजक - युवा प्रकोष्ठ ',
-                        imageUrl: 'https://picsum.photos/id/67/300/300',
+                        imagePath: 'assets/images/vishwajeet.jpeg',
                         bioEn: 'Managing -Youth Cell and Programs',
                         bioHi: 'संचालन - युवा प्रकोष्ठ एवं कार्यक्रम प्रबंधन',
                       ),
@@ -388,7 +403,7 @@ Bhartiya Sadbhavna Manch stands as a platform committed to nation-building, soci
     required String nameHi,
     required String positionEn,
     required String positionHi,
-    required String imageUrl,
+    required String imagePath,
     required String bioEn,
     required String bioHi,
   }) {
@@ -405,7 +420,7 @@ Bhartiya Sadbhavna Manch stands as a platform committed to nation-building, soci
           children: [
             ClipRRect(
               borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
-              child: Image.asset(imageUrl, height: 220, width: double.infinity, fit: BoxFit.cover),
+              child: Image.asset(imagePath, height: 220, width: double.infinity, fit: BoxFit.cover),
             ),
             Padding(
               padding: const EdgeInsets.all(16),
