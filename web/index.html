@@ -31,6 +31,31 @@
 
   <title>web_bsm</title>
   <link rel="manifest" href="manifest.json">
+
+  <!-- EmailJS SDK -->
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/index.min.js"></script>
+  <script type="text/javascript">
+    (function() {
+      // Initialize EmailJS with your public key
+      emailjs.init("ZbZZAtfauXMp4calj");
+    })();
+
+    // Function to send email via EmailJS
+    window.sendEmailJS = async function(params) {
+      try {
+        const response = await emailjs.send(
+          params.service_id,
+          params.template_id,
+          params.template_params
+        );
+        console.log('Email sent successfully:', response);
+        return response;
+      } catch (error) {
+        console.error('EmailJS Error:', error);
+        throw error;
+      }
+    };
+  </script>
 </head>
 <body>
   <script src="flutter_bootstrap.js" async></script>

@@ -1,9 +1,17 @@
-import 'package:web/web.dart' as web;
+import 'dart:html' as html;
+import 'dart:js_util' as js_util;
 import 'dart:ui_web' as ui_web;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:web/web.dart' as web show HTMLIFrameElement;
+
+// EmailJS Configuration
+const String emailjsServiceId = 'service_xu8fwps';
+const String emailjsTemplateId = 'template_y03xjwd'; // Replace with your template ID
+const String emailjsPublicKey = 'ZbZZAtfauXMp4calj'; // Replace with your public key
+const String emailjsRecipientEmail = 'bhartiysadbhavnamanch@gmail.com'; // Replace with recipient email
 
 void main() {
   runApp(const MyApp());
@@ -826,8 +834,33 @@ Bhartiya Sadbhavna Manch stands as a platform committed to nation-building, soci
 
     setState(() => _isSubmitting = true);
 
-    // Simulate API call
-    Future.delayed(const Duration(seconds: 2), () {
+    // Send email via EmailJS
+    _sendEmailViaEmailJS(name, email, phone, message);
+  }
+
+  // Send email using EmailJS
+  Future<void> _sendEmailViaEmailJS(String name, String email, String phone, String message) async {
+    final params = js_util.jsify({
+      'service_id': emailjsServiceId,
+      'template_id': emailjsTemplateId,
+      'template_params': {
+        'to_email': emailjsRecipientEmail,
+        'from_name': name,
+        'from_email': email,
+        'phone': phone,
+        'message': message,
+      }
+    });
+
+    try {
+      final sendFn = js_util.getProperty(html.window, 'sendEmailJS');
+      if (sendFn == null) {
+        throw Exception('sendEmailJS is not defined on window');
+      }
+
+      final promise = js_util.callMethod(sendFn, 'call', [html.window, params]);
+      await js_util.promiseToFuture(promise);
+
       if (mounted) {
         setState(() => _isSubmitting = false);
         _showSnackBar(getText('Thank you! Your message has been sent successfully.', 'धन्यवाद! आपका संदेश सफलतापूर्वक भेज दिया गया है।'), isSuccess: true);
@@ -838,7 +871,14 @@ Bhartiya Sadbhavna Manch stands as a platform committed to nation-building, soci
         _phoneController.clear();
         _messageController.clear();
       }
-    });
+    } catch (e) {
+      if (mounted) {
+        setState(() => _isSubmitting = false);
+        final errorMessage = e?.toString() ?? 'Unknown error';
+        _showSnackBar(getText('Error sending message. Please try again.', 'संदेश भेजने में त्रुटि। कृपया पुनः प्रयास करें।') + '\n' + errorMessage);
+        print('EmailJS Error: $e');
+      }
+    }
   }
 
   void _showSnackBar(String message, {bool isSuccess = false}) {
