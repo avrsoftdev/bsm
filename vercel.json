@@ -1,5 +1,4 @@
 {
-  "rootDirectory": "web_bsm",
-  "buildCommand": "chmod +x web_bsm/build.sh && ./web_bsm/build.sh",
-  "outputDirectory": "web_bsm/build/web"
+  "buildCommand": "chmod +x build.sh && ./build.sh",
+  "outputDirectory": "build/web"
 }
