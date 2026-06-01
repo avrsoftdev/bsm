@@ -159,7 +159,14 @@ class _HomePageState extends State<HomePage> {
 
   // Register YouTube Video for Web
   void _registerYouTubeView(String videoId) {
-    registerYouTubeView(videoId);
+    registerYouTubeView(videoId, onTap: _pauseVideoAutoScroll);
+  }
+
+  void _pauseVideoAutoScroll() {
+    if (_videoAutoScrollTimer?.isActive ?? false) {
+      _videoAutoScrollTimer?.cancel();
+      _videoAutoScrollTimer = null;
+    }
   }
 
   @override
@@ -473,8 +480,11 @@ Bhartiya Sadbhavna Manch stands as a platform committed to nation-building, soci
                                   },
                                   itemBuilder: (context, index) {
                                     final videoId = _youtubeVideoIds[index];
-                                    return _buildYouTubeVideo(videoId,
-                                        width: sliderWidth);
+                                    return _buildYouTubeVideo(
+                                      videoId,
+                                      width: sliderWidth,
+                                      onTap: _pauseVideoAutoScroll,
+                                    );
                                   },
                                 ),
                               ),
@@ -485,6 +495,7 @@ Bhartiya Sadbhavna Manch stands as a platform committed to nation-building, soci
                                 iconSize: 40,
                                 color: Colors.black54,
                                 onPressed: () {
+                                  _pauseVideoAutoScroll();
                                   final previousIndex =
                                       (_currentVideoIndex - 1 +
                                               _youtubeVideoIds.length) %
@@ -509,6 +520,7 @@ Bhartiya Sadbhavna Manch stands as a platform committed to nation-building, soci
                                 iconSize: 40,
                                 color: Colors.black54,
                                 onPressed: () {
+                                  _pauseVideoAutoScroll();
                                   final nextIndex =
                                       (_currentVideoIndex + 1) %
                                           _youtubeVideoIds.length;
@@ -716,18 +728,22 @@ Bhartiya Sadbhavna Manch stands as a platform committed to nation-building, soci
   }
 
   // YouTube Video Widget
-  Widget _buildYouTubeVideo(String videoId, {double width = 420}) {
-    return Container(
-      width: width,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [BoxShadow(color: Colors.black26, blurRadius: 10)],
-      ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(12),
-        child: AspectRatio(
-          aspectRatio: 16 / 9,
-          child: HtmlElementView(viewType: 'youtube-$videoId'),
+  Widget _buildYouTubeVideo(String videoId,
+      {double width = 420, void Function()? onTap}) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: width,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: [BoxShadow(color: Colors.black26, blurRadius: 10)],
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(12),
+          child: AspectRatio(
+            aspectRatio: 16 / 9,
+            child: HtmlElementView(viewType: 'youtube-$videoId'),
+          ),
         ),
       ),
     );

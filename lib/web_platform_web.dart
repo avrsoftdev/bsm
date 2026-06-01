@@ -4,18 +4,23 @@ import 'dart:html' as html;
 import 'dart:js_util' as js_util;
 import 'dart:ui_web' as ui_web;
 
-import 'package:web/web.dart' as web show HTMLIFrameElement;
-
-void registerYouTubeView(String videoId) {
+void registerYouTubeView(String videoId, {void Function()? onTap}) {
   final viewType = 'youtube-$videoId';
   ui_web.platformViewRegistry.registerViewFactory(
     viewType,
-    (int viewId) => web.HTMLIFrameElement()
-      ..width = '100%'
-      ..height = '100%'
-      ..src = 'https://www.youtube.com/embed/$videoId'
-      ..style.border = 'none'
-      ..allowFullscreen = true,
+    (int viewId) {
+      final iframe = html.IFrameElement()
+        ..width = '100%'
+        ..height = '100%'
+        ..src = 'https://www.youtube.com/embed/$videoId'
+        ..style.border = 'none'
+        ..allowFullscreen = true;
+      if (onTap != null) {
+        iframe.onMouseDown.listen((_) => onTap());
+        iframe.onFocus.listen((_) => onTap());
+      }
+      return iframe;
+    },
   );
 }
 
