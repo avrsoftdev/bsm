@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -73,6 +76,17 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final ScrollController _scrollController = ScrollController();
   final ScrollController _marqueeController = ScrollController();
+  final PageController _videoPageController = PageController();
+  Timer? _videoAutoScrollTimer;
+  int _currentVideoIndex = 0;
+
+  final List<String> _youtubeVideoIds = [
+    'wYHvdPT4z6w',
+    'mlHb0udHId0',
+    'vVfGgaa2lMk',
+    'FHMmbrtnPMo',
+    'ppv3ZeriLVI',
+  ];
 
   final GlobalKey _homeKey = GlobalKey();
   final GlobalKey _historyKey = GlobalKey();
@@ -151,6 +165,18 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+    for (final videoId in _youtubeVideoIds) {
+      _registerYouTubeView(videoId);
+    }
+    _videoAutoScrollTimer = Timer.periodic(const Duration(seconds: 3), (_) {
+      if (!_videoPageController.hasClients || !mounted) return;
+      final nextIndex = (_currentVideoIndex + 1) % _youtubeVideoIds.length;
+      _videoPageController.animateToPage(
+        nextIndex,
+        duration: const Duration(milliseconds: 400),
+        curve: Curves.easeInOut,
+      );
+    });
     // Start the marquee after first frame so the controller has dimensions
     WidgetsBinding.instance.addPostFrameCallback((_) => _startMarquee());
   }
@@ -163,14 +189,13 @@ class _HomePageState extends State<HomePage> {
     _messageController.dispose();
     _scrollController.dispose();
     _marqueeController.dispose();
+    _videoPageController.dispose();
+    _videoAutoScrollTimer?.cancel();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    // Register your real YouTube videos here
-    _registerYouTubeView('lXKX22WD0Ws'); // First video ID
-    _registerYouTubeView('fyNm4PZMDVc'); // Second video ID
     final isCompactNavigation = MediaQuery.sizeOf(context).width < 1024;
 
     return Scaffold(
@@ -410,13 +435,110 @@ Bhartiya Sadbhavna Manch stands as a platform committed to nation-building, soci
                       style: const TextStyle(
                           fontSize: 36, fontWeight: FontWeight.bold)),
                   const SizedBox(height: 40),
-                  Wrap(
-                    spacing: 30,
-                    runSpacing: 30,
-                    children: [
-                      _buildYouTubeVideo('lXKX22WD0Ws'),
-                      _buildYouTubeVideo('fyNm4PZMDVc'),
-                    ],
+                  SizedBox(
+                    height: 360,
+                    width: double.infinity,
+                    child: LayoutBuilder(
+                      builder: (context, constraints) {
+                        final sliderWidth = min(820.0, constraints.maxWidth * 0.85);
+                        return Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            Center(
+                              child: SizedBox(
+                                width: sliderWidth,
+                                child: PageView.builder(
+                                  controller: _videoPageController,
+                                  itemCount: _youtubeVideoIds.length,
+                                  onPageChanged: (index) {
+                                    setState(() {
+                                      _currentVideoIndex = index;
+                                    });
+                                  },
+                                  itemBuilder: (context, index) {
+                                    final videoId = _youtubeVideoIds[index];
+                                    return _buildYouTubeVideo(videoId,
+                                        width: sliderWidth);
+                                  },
+                                ),
+                              ),
+                            ),
+                            Positioned(
+                              left: 0,
+                              child: IconButton(
+                                iconSize: 40,
+                                color: Colors.black54,
+                                onPressed: () {
+                                  final previousIndex =
+                                      (_currentVideoIndex - 1 +
+                                              _youtubeVideoIds.length) %
+                                          _youtubeVideoIds.length;
+                                  _videoPageController.animateToPage(
+                                    previousIndex,
+                                    duration:
+                                        const Duration(milliseconds: 400),
+                                    curve: Curves.easeInOut,
+                                  );
+                                },
+                                icon: const CircleAvatar(
+                                  backgroundColor: Colors.white70,
+                                  child: Icon(Icons.chevron_left,
+                                      color: Colors.black87),
+                                ),
+                              ),
+                            ),
+                            Positioned(
+                              right: 0,
+                              child: IconButton(
+                                iconSize: 40,
+                                color: Colors.black54,
+                                onPressed: () {
+                                  final nextIndex =
+                                      (_currentVideoIndex + 1) %
+                                          _youtubeVideoIds.length;
+                                  _videoPageController.animateToPage(
+                                    nextIndex,
+                                    duration:
+                                        const Duration(milliseconds: 400),
+                                    curve: Curves.easeInOut,
+                                  );
+                                },
+                                icon: const CircleAvatar(
+                                  backgroundColor: Colors.white70,
+                                  child: Icon(Icons.chevron_right,
+                                      color: Colors.black87),
+                                ),
+                              ),
+                            ),
+                            Positioned(
+                              bottom: 8,
+                              left: 0,
+                              right: 0,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: List.generate(
+                                  _youtubeVideoIds.length,
+                                  (index) => AnimatedContainer(
+                                    duration:
+                                        const Duration(milliseconds: 250),
+                                    margin: const EdgeInsets.symmetric(
+                                        horizontal: 6),
+                                    width: _currentVideoIndex == index ? 18 : 10,
+                                    height: 10,
+                                    decoration: BoxDecoration(
+                                      color: _currentVideoIndex == index
+                                          ? Colors.orange
+                                          : Colors.grey.shade400,
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        );
+                      },
+                    ),
                   ),
                 ],
               ),
@@ -578,9 +700,9 @@ Bhartiya Sadbhavna Manch stands as a platform committed to nation-building, soci
   }
 
   // YouTube Video Widget
-  Widget _buildYouTubeVideo(String videoId) {
+  Widget _buildYouTubeVideo(String videoId, {double width = 420}) {
     return Container(
-      width: 420,
+      width: width,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
         boxShadow: [BoxShadow(color: Colors.black26, blurRadius: 10)],
