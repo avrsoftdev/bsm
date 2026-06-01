@@ -1,17 +1,17 @@
-import 'dart:html' as html;
-import 'dart:js_util' as js_util;
-import 'dart:ui_web' as ui_web;
-
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:web/web.dart' as web show HTMLIFrameElement;
+
+import 'web_platform.dart';
 
 // EmailJS Configuration
 const String emailjsServiceId = 'service_xu8fwps';
-const String emailjsTemplateId = 'template_y03xjwd'; // Replace with your template ID
-const String emailjsPublicKey = 'ZbZZAtfauXMp4calj'; // Replace with your public key
-const String emailjsRecipientEmail = 'bhartiysadbhavnamanch@gmail.com'; // Replace with recipient email
+const String emailjsTemplateId =
+    'template_y03xjwd'; // Replace with your template ID
+const String emailjsPublicKey =
+    'ZbZZAtfauXMp4calj'; // Replace with your public key
+const String emailjsRecipientEmail =
+    'bhartiysadbhavnamanch@gmail.com'; // Replace with recipient email
 
 void main() {
   runApp(const MyApp());
@@ -77,7 +77,6 @@ class _HomePageState extends State<HomePage> {
   final GlobalKey _homeKey = GlobalKey();
   final GlobalKey _historyKey = GlobalKey();
   final GlobalKey _membersKey = GlobalKey();
-  final GlobalKey _blogsKey = GlobalKey();
   final GlobalKey _videosKey = GlobalKey();
   final GlobalKey _contactKey = GlobalKey();
 
@@ -115,10 +114,6 @@ class _HomePageState extends State<HomePage> {
           child: Text(getText('Members', 'सदस्य'),
               style: const TextStyle(color: Colors.orange))),
       TextButton(
-          onPressed: () => _scrollToSection(_blogsKey),
-          child: Text(getText('Blogs', 'ब्लॉग'),
-              style: const TextStyle(color: Colors.orange))),
-      TextButton(
           onPressed: () => _scrollToSection(_videosKey),
           child: Text(getText('Videos', 'वीडियो'),
               style: const TextStyle(color: Colors.orange))),
@@ -140,7 +135,6 @@ class _HomePageState extends State<HomePage> {
             value: _historyKey, child: Text(getText('History', 'इतिहास'))),
         PopupMenuItem(
             value: _membersKey, child: Text(getText('Members', 'सदस्य'))),
-        PopupMenuItem(value: _blogsKey, child: Text(getText('Blogs', 'ब्लॉग'))),
         PopupMenuItem(
             value: _videosKey, child: Text(getText('Videos', 'वीडियो'))),
         PopupMenuItem(
@@ -151,16 +145,7 @@ class _HomePageState extends State<HomePage> {
 
   // Register YouTube Video for Web
   void _registerYouTubeView(String videoId) {
-    final viewType = 'youtube-$videoId';
-    ui_web.platformViewRegistry.registerViewFactory(
-      viewType,
-      (int viewId) => web.HTMLIFrameElement()
-        ..width = '100%'
-        ..height = '100%'
-        ..src = 'https://www.youtube.com/embed/$videoId'
-        ..style.border = 'none'
-        ..allowFullscreen = true,
-    );
+    registerYouTubeView(videoId);
   }
 
   @override
@@ -414,69 +399,6 @@ Bhartiya Sadbhavna Manch stands as a platform committed to nation-building, soci
               ),
             ),
 
-            // ==================== BLOGS SECTION ====================
-            Container(
-              key: _blogsKey,
-              padding: const EdgeInsets.symmetric(vertical: 80, horizontal: 40),
-              child: Column(
-                children: [
-                  Text(
-                    getText('Latest Blogs', 'नवीनतम ब्लॉग'),
-                    style: const TextStyle(
-                        fontSize: 36, fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 20),
-                  Text(
-                    getText(
-                        'Insights and updates from Bhartiya Sadbhavna Manch',
-                        'भारतीय सद्भावना मंच की अंतर्दृष्टि और अपडेट'),
-                    style: TextStyle(fontSize: 18, color: Colors.grey[700]),
-                  ),
-                  const SizedBox(height: 50),
-
-                  // Responsive Blog Cards
-                  Wrap(
-                    spacing: 25,
-                    runSpacing: 30,
-                    alignment: WrapAlignment.center,
-                    children: [
-                      _buildBlogCard(
-                        titleEn: 'Importance of Social Harmony in Modern India',
-                        titleHi: 'आधुनिक भारत में सामाजिक सद्भावना का महत्व',
-                        excerptEn:
-                            'Exploring how unity and goodwill can strengthen our diverse society...',
-                        excerptHi:
-                            'यह कैसे एकता और सद्भावना हमारी विविध समाज को मजबूत बना सकती है...',
-                        imageUrl: 'https://picsum.photos/id/201/400/250',
-                        date: '12 April 2026',
-                      ),
-                      _buildBlogCard(
-                        titleEn: 'Role of Youth in Nation Building',
-                        titleHi: 'राष्ट्र निर्माण में युवाओं की भूमिका',
-                        excerptEn:
-                            'How young minds are leading initiatives for social unity...',
-                        excerptHi:
-                            'कैसे युवा मस्तिष्क सामाजिक एकता के लिए पहल कर रहे हैं...',
-                        imageUrl: 'https://picsum.photos/id/202/400/250',
-                        date: '10 April 2026',
-                      ),
-                      _buildBlogCard(
-                        titleEn: 'Cultural Events that Promote Goodwill',
-                        titleHi:
-                            'सद्भावना को बढ़ावा देने वाले सांस्कृतिक कार्यक्रम',
-                        excerptEn:
-                            'A look at our recent successful cultural programs...',
-                        excerptHi:
-                            'हमारे हाल के सफल सांस्कृतिक कार्यक्रमों पर एक नजर...',
-                        imageUrl: 'https://picsum.photos/id/203/400/250',
-                        date: '08 April 2026',
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-
             // Videos Section
             Container(
               key: _videosKey,
@@ -646,70 +568,6 @@ Bhartiya Sadbhavna Manch stands as a platform committed to nation-building, soci
                   Text(bio,
                       style: const TextStyle(fontSize: 14, height: 1.5),
                       textAlign: TextAlign.center),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  // Beautiful Blog Card
-  Widget _buildBlogCard({
-    required String titleEn,
-    required String titleHi,
-    required String excerptEn,
-    required String excerptHi,
-    required String imageUrl,
-    required String date,
-  }) {
-    final title = getText(titleEn, titleHi);
-    final excerpt = getText(excerptEn, excerptHi);
-
-    return Card(
-      elevation: 6,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      child: SizedBox(
-        width: 340,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            ClipRRect(
-              borderRadius:
-                  const BorderRadius.vertical(top: Radius.circular(16)),
-              child: Image.network(imageUrl,
-                  height: 200, width: double.infinity, fit: BoxFit.cover),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(date,
-                      style: TextStyle(fontSize: 13, color: Colors.grey[600])),
-                  const SizedBox(height: 8),
-                  Text(title,
-                      style: const TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          height: 1.3),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis),
-                  const SizedBox(height: 12),
-                  Text(excerpt,
-                      style: const TextStyle(fontSize: 15, height: 1.5),
-                      maxLines: 3,
-                      overflow: TextOverflow.ellipsis),
-                  const SizedBox(height: 16),
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: TextButton(
-                      onPressed: () {},
-                      child: Text(getText('Read More →', 'और पढ़ें →'),
-                          style: const TextStyle(fontWeight: FontWeight.w600)),
-                    ),
-                  ),
                 ],
               ),
             ),
@@ -994,8 +852,9 @@ Bhartiya Sadbhavna Manch stands as a platform committed to nation-building, soci
   }
 
   // Send email using EmailJS
-  Future<void> _sendEmailViaEmailJS(String name, String email, String phone, String message) async {
-    final params = js_util.jsify({
+  Future<void> _sendEmailViaEmailJS(
+      String name, String email, String phone, String message) async {
+    final params = <String, dynamic>{
       'service_id': emailjsServiceId,
       'template_id': emailjsTemplateId,
       'template_params': {
@@ -1005,16 +864,10 @@ Bhartiya Sadbhavna Manch stands as a platform committed to nation-building, soci
         'phone': phone,
         'message': message,
       }
-    });
+    };
 
     try {
-      final sendFn = js_util.getProperty(html.window, 'sendEmailJS');
-      if (sendFn == null) {
-        throw Exception('sendEmailJS is not defined on window');
-      }
-
-      final promise = js_util.callMethod(sendFn, 'call', [html.window, params]);
-      await js_util.promiseToFuture(promise);
+      await sendEmailJS(params);
 
       if (mounted) {
         setState(() => _isSubmitting = false);
@@ -1032,9 +885,12 @@ Bhartiya Sadbhavna Manch stands as a platform committed to nation-building, soci
     } catch (e) {
       if (mounted) {
         setState(() => _isSubmitting = false);
-        final errorMessage = e?.toString() ?? 'Unknown error';
-        _showSnackBar(getText('Error sending message. Please try again.', 'संदेश भेजने में त्रुटि। कृपया पुनः प्रयास करें।') + '\n' + errorMessage);
-        print('EmailJS Error: $e');
+        final errorMessage = e.toString();
+        _showSnackBar(
+          '${getText('Error sending message. Please try again.',
+                  'संदेश भेजने में त्रुटि। कृपया पुनः प्रयास करें।')}\n$errorMessage',
+        );
+        debugPrint('EmailJS Error: $e');
       }
     }
   }
