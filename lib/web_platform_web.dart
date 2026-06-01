@@ -24,6 +24,26 @@ void registerYouTubeView(String videoId, {void Function()? onTap}) {
   );
 }
 
+void registerMP4View(String videoPath, {void Function()? onTap}) {
+  final viewType = 'mp4-${videoPath.hashCode}';
+  ui_web.platformViewRegistry.registerViewFactory(
+    viewType,
+    (int viewId) {
+      final videoElement = html.VideoElement()
+        ..controls = true
+        ..style.width = '100%'
+        ..style.height = '100%'
+        ..style.objectFit = 'contain'
+        ..src = videoPath;
+      if (onTap != null) {
+        videoElement.onMouseDown.listen((_) => onTap());
+        videoElement.onFocus.listen((_) => onTap());
+      }
+      return videoElement;
+    },
+  );
+}
+
 Future<void> sendEmailJS(Map<String, dynamic> params) async {
   final sendFn = js_util.getProperty(html.window, 'sendEmailJS');
   if (sendFn == null) {

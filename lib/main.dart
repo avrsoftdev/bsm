@@ -88,6 +88,24 @@ class _HomePageState extends State<HomePage> {
     'ppv3ZeriLVI',
   ];
 
+  final List<String> _mp4Videos = [
+    'assets/images/bsmvid.mp4',
+    'assets/images/bsmvid1.mp4',
+    'assets/images/bsmvid2.mp4',
+  ];
+
+  // Get all videos (YouTube + MP4)
+  List<Map<String, dynamic>> get _allVideos {
+    final videos = <Map<String, dynamic>>[];
+    for (final id in _youtubeVideoIds) {
+      videos.add({'type': 'youtube', 'id': id});
+    }
+    for (final path in _mp4Videos) {
+      videos.add({'type': 'mp4', 'path': path});
+    }
+    return videos;
+  }
+
   final GlobalKey _homeKey = GlobalKey();
   final GlobalKey _historyKey = GlobalKey();
   final GlobalKey _membersKey = GlobalKey();
@@ -162,6 +180,11 @@ class _HomePageState extends State<HomePage> {
     registerYouTubeView(videoId, onTap: _pauseVideoAutoScroll);
   }
 
+  // Register MP4 Video for Web
+  void _registerMP4View(String videoPath) {
+    registerMP4View(videoPath, onTap: _pauseVideoAutoScroll);
+  }
+
   void _pauseVideoAutoScroll() {
     if (_videoAutoScrollTimer?.isActive ?? false) {
       _videoAutoScrollTimer?.cancel();
@@ -175,15 +198,9 @@ class _HomePageState extends State<HomePage> {
     for (final videoId in _youtubeVideoIds) {
       _registerYouTubeView(videoId);
     }
-    _videoAutoScrollTimer = Timer.periodic(const Duration(seconds: 3), (_) {
-      if (!_videoPageController.hasClients || !mounted) return;
-      final nextIndex = (_currentVideoIndex + 1) % _youtubeVideoIds.length;
-      _videoPageController.animateToPage(
-        nextIndex,
-        duration: const Duration(milliseconds: 400),
-        curve: Curves.easeInOut,
-      );
-    });
+    for (final videoPath in _mp4Videos) {
+      _registerMP4View(videoPath);
+    }
     // Start the marquee after first frame so the controller has dimensions
     WidgetsBinding.instance.addPostFrameCallback((_) => _startMarquee());
   }
@@ -197,7 +214,6 @@ class _HomePageState extends State<HomePage> {
     _scrollController.dispose();
     _marqueeController.dispose();
     _videoPageController.dispose();
-    _videoAutoScrollTimer?.cancel();
     super.dispose();
   }
 
@@ -453,7 +469,7 @@ Bhartiya Sadbhavna Manch stands as a platform committed to nation-building, soci
               color: Colors.grey.shade50,
               child: Column(
                 children: [
-                  Text(getText('Our YouTube Videos', 'हमारे यूट्यूब वीडियो'),
+                  Text(getText('Our Videos', 'हमारे वीडियो'),
                       style: const TextStyle(
                           fontSize: 36, fontWeight: FontWeight.bold)),
                   const SizedBox(height: 40),
@@ -472,19 +488,27 @@ Bhartiya Sadbhavna Manch stands as a platform committed to nation-building, soci
                                 width: sliderWidth,
                                 child: PageView.builder(
                                   controller: _videoPageController,
-                                  itemCount: _youtubeVideoIds.length,
+                                  itemCount: _allVideos.length,
                                   onPageChanged: (index) {
                                     setState(() {
                                       _currentVideoIndex = index;
                                     });
                                   },
                                   itemBuilder: (context, index) {
-                                    final videoId = _youtubeVideoIds[index];
-                                    return _buildYouTubeVideo(
-                                      videoId,
-                                      width: sliderWidth,
-                                      onTap: _pauseVideoAutoScroll,
-                                    );
+                                    final video = _allVideos[index];
+                                    if (video['type'] == 'youtube') {
+                                      return _buildYouTubeVideo(
+                                        video['id'],
+                                        width: sliderWidth,
+                                        onTap: _pauseVideoAutoScroll,
+                                      );
+                                    } else {
+                                      return _buildMP4Video(
+                                        video['path'],
+                                        width: sliderWidth,
+                                        onTap: _pauseVideoAutoScroll,
+                                      );
+                                    }
                                   },
                                 ),
                               ),
@@ -498,8 +522,8 @@ Bhartiya Sadbhavna Manch stands as a platform committed to nation-building, soci
                                   _pauseVideoAutoScroll();
                                   final previousIndex =
                                       (_currentVideoIndex - 1 +
-                                              _youtubeVideoIds.length) %
-                                          _youtubeVideoIds.length;
+                                              _allVideos.length) %
+                                          _allVideos.length;
                                   _videoPageController.animateToPage(
                                     previousIndex,
                                     duration:
@@ -523,7 +547,7 @@ Bhartiya Sadbhavna Manch stands as a platform committed to nation-building, soci
                                   _pauseVideoAutoScroll();
                                   final nextIndex =
                                       (_currentVideoIndex + 1) %
-                                          _youtubeVideoIds.length;
+                                          _allVideos.length;
                                   _videoPageController.animateToPage(
                                     nextIndex,
                                     duration:
@@ -545,7 +569,7 @@ Bhartiya Sadbhavna Manch stands as a platform committed to nation-building, soci
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: List.generate(
-                                  _youtubeVideoIds.length,
+                                  _allVideos.length,
                                   (index) => AnimatedContainer(
                                     duration:
                                         const Duration(milliseconds: 250),
@@ -746,6 +770,28 @@ Bhartiya Sadbhavna Manch stands as a platform committed to nation-building, soci
           child: AspectRatio(
             aspectRatio: 16 / 9,
             child: HtmlElementView(viewType: 'youtube-$videoId'),
+          ),
+        ),
+      ),
+    );
+  }
+
+  // MP4 Video Widget
+  Widget _buildMP4Video(String videoPath,
+      {double width = 420, void Function()? onTap}) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: width,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: [BoxShadow(color: Colors.black26, blurRadius: 10)],
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(12),
+          child: AspectRatio(
+            aspectRatio: 16 / 9,
+            child: HtmlElementView(viewType: 'mp4-${videoPath.hashCode}'),
           ),
         ),
       ),
