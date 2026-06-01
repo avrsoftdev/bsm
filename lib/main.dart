@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'web_platform.dart';
 
@@ -131,6 +132,15 @@ class _HomePageState extends State<HomePage> {
     return widget.currentLocale.languageCode == 'hi' ? hi : en;
   }
 
+  Future<void> _launchDonateUrl() async {
+    final uri = Uri.parse('https://postimg.cc/gr6Knw9t');
+    if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(getText('Could not open Donate link.', 'डोनेट लिंक खोलने में असमर्थ।'))),
+      );
+    }
+  }
+
   List<Widget> _buildDesktopNavigation() {
     return [
       TextButton(
@@ -157,20 +167,42 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildCompactNavigationMenu() {
-    return PopupMenuButton<GlobalKey>(
+    return PopupMenuButton<String>(
       icon: const Icon(Icons.menu),
       tooltip: getText('Open navigation menu', 'नेविगेशन मेनू खोलें'),
-      onSelected: _scrollToSection,
+      onSelected: (value) {
+        switch (value) {
+          case 'home':
+            _scrollToSection(_homeKey);
+            break;
+          case 'history':
+            _scrollToSection(_historyKey);
+            break;
+          case 'members':
+            _scrollToSection(_membersKey);
+            break;
+          case 'videos':
+            _scrollToSection(_videosKey);
+            break;
+          case 'contact':
+            _scrollToSection(_contactKey);
+            break;
+          case 'donate':
+            _launchDonateUrl();
+            break;
+        }
+      },
       itemBuilder: (_) => [
-        PopupMenuItem(value: _homeKey, child: Text(getText('Home', 'होम'))),
+        PopupMenuItem(value: 'home', child: Text(getText('Home', 'होम'))),
+        PopupMenuItem(value: 'history', child: Text(getText('History', 'इतिहास'))),
+        PopupMenuItem(value: 'members', child: Text(getText('Members', 'सदस्य'))),
+        PopupMenuItem(value: 'videos', child: Text(getText('Videos', 'वीडियो'))),
+        PopupMenuItem(value: 'contact', child: Text(getText('Contact', 'संपर्क'))),
+        const PopupMenuDivider(),
         PopupMenuItem(
-            value: _historyKey, child: Text(getText('History', 'इतिहास'))),
-        PopupMenuItem(
-            value: _membersKey, child: Text(getText('Members', 'सदस्य'))),
-        PopupMenuItem(
-            value: _videosKey, child: Text(getText('Videos', 'वीडियो'))),
-        PopupMenuItem(
-            value: _contactKey, child: Text(getText('Contact', 'संपर्क'))),
+          value: 'donate',
+          child: Text(getText('Donate now', 'अब दान करें')),
+        ),
       ],
     );
   }
@@ -262,8 +294,19 @@ class _HomePageState extends State<HomePage> {
           ),
           if (isCompactNavigation)
             _buildCompactNavigationMenu()
-          else
-            ..._buildDesktopNavigation(),
+          else ..._buildDesktopNavigation(),
+          if (!isCompactNavigation) ...[
+            TextButton(
+              onPressed: _launchDonateUrl,
+              style: TextButton.styleFrom(
+                backgroundColor: const Color.fromARGB(255, 210, 105, 25),
+                foregroundColor: Colors.white,
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
+              ),
+              child: Text(getText('Donate now', 'अब दान करें')),
+            ),
+          ],
           const SizedBox(width: 16),
         ],
       ),
