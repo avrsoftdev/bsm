@@ -249,10 +249,13 @@ class _HomePageState extends State<HomePage> {
             Container(
               key: _homeKey,
               height: MediaQuery.of(context).size.height * 0.85,
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 image: DecorationImage(
-                  image:
-                      NetworkImage('https://picsum.photos/id/1015/1920/1080'),
+                  image: AssetImage(
+                    MediaQuery.of(context).size.width < 768
+                        ? 'assets/images/collage_mobile.png'
+                        : 'assets/images/collage_laptop.png',
+                  ),
                   fit: BoxFit.cover,
                 ),
               ),
@@ -440,7 +443,8 @@ Bhartiya Sadbhavna Manch stands as a platform committed to nation-building, soci
                     width: double.infinity,
                     child: LayoutBuilder(
                       builder: (context, constraints) {
-                        final sliderWidth = min(820.0, constraints.maxWidth * 0.85);
+                        final double sliderWidth =
+                            min<double>(820.0, constraints.maxWidth * 0.85);
                         return Stack(
                           alignment: Alignment.center,
                           children: [
