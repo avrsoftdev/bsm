@@ -219,6 +219,9 @@ class _HomePageState extends State<HomePage> {
           getText('Bhartiya Sadbhavna Manch', 'भारतीय सद्भावना मंच'),
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
+          style: TextStyle(
+            fontSize: MediaQuery.of(context).size.width < 600 ? 14 : 18,
+          ),
         ),
         backgroundColor: const Color.fromARGB(255, 255, 255, 255),
         foregroundColor: const Color.fromARGB(255, 210, 105, 25),
@@ -271,7 +274,11 @@ class _HomePageState extends State<HomePage> {
                           getText('Welcome to Bhartiya Sadbhavna Manch',
                               'भारतीय सद्भावना मंच में स्वागत है'),
                           style: GoogleFonts.poppins(
-                              fontSize: 48,
+                              fontSize: MediaQuery.of(context).size.width < 600
+                                  ? 24
+                                  : MediaQuery.of(context).size.width < 900
+                                      ? 32
+                                      : 48,
                               fontWeight: FontWeight.bold,
                               color: Colors.white),
                           textAlign: TextAlign.center,
@@ -280,8 +287,13 @@ class _HomePageState extends State<HomePage> {
                         Text(
                           getText('Promoting Social Unity and Goodwill',
                               'सामाजिक एकता और सद्भावना को बढ़ावा देना'),
-                          style: const TextStyle(
-                              fontSize: 22, color: Colors.white70),
+                          style: TextStyle(
+                              fontSize: MediaQuery.of(context).size.width < 600
+                                  ? 14
+                                  : MediaQuery.of(context).size.width < 900
+                                      ? 16
+                                      : 22,
+                              color: Colors.white70),
                           textAlign: TextAlign.center,
                         ),
                         const SizedBox(height: 40),
