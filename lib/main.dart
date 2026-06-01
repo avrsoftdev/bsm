@@ -614,6 +614,9 @@ Bhartiya Sadbhavna Manch stands as a platform committed to nation-building, soci
     'assets/images/Screenshot_20250427_214530_WhatsApp.jpg',
     'assets/images/rss1.jpeg',
     'assets/images/rss2.jpeg',
+    'assets/images/maaji1.jpeg',
+    'assets/images/maaji2.jpeg',
+    'assets/images/maaji3.jpeg',
   ];
 
   void _startMarquee() async {
