@@ -133,7 +133,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> _launchDonateUrl() async {
-    final uri = Uri.parse('https://postimg.cc/gr6Knw9t');
+    final uri = Uri.parse('https://jumpshare.com/share/sbn0Xer61Pfz4iGcFcxw');
     if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(getText('Could not open Donate link.', 'डोनेट लिंक खोलने में असमर्थ।'))),
