@@ -136,7 +136,9 @@ class _HomePageState extends State<HomePage> {
     final uri = Uri.parse('https://jumpshare.com/share/sbn0Xer61Pfz4iGcFcxw');
     if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(getText('Could not open Donate link.', 'डोनेट लिंक खोलने में असमर्थ।'))),
+        SnackBar(
+            content: Text(getText('Could not open Donate link.',
+                'डोनेट लिंक खोलने में असमर्थ।'))),
       );
     }
   }
@@ -173,10 +175,14 @@ class _HomePageState extends State<HomePage> {
       onSelected: _handleCompactMenuSelection,
       itemBuilder: (_) => [
         PopupMenuItem(value: 'home', child: Text(getText('Home', 'होम'))),
-        PopupMenuItem(value: 'history', child: Text(getText('History', 'इतिहास'))),
-        PopupMenuItem(value: 'members', child: Text(getText('Members', 'सदस्य'))),
-        PopupMenuItem(value: 'videos', child: Text(getText('Videos', 'वीडियो'))),
-        PopupMenuItem(value: 'contact', child: Text(getText('Contact', 'संपर्क'))),
+        PopupMenuItem(
+            value: 'history', child: Text(getText('History', 'इतिहास'))),
+        PopupMenuItem(
+            value: 'members', child: Text(getText('Members', 'सदस्य'))),
+        PopupMenuItem(
+            value: 'videos', child: Text(getText('Videos', 'वीडियो'))),
+        PopupMenuItem(
+            value: 'contact', child: Text(getText('Contact', 'संपर्क'))),
         const PopupMenuDivider(),
         PopupMenuItem(
           value: 'donate',
@@ -309,7 +315,8 @@ class _HomePageState extends State<HomePage> {
           ),
           if (isCompactNavigation)
             _buildCompactNavigationMenu()
-          else ..._buildDesktopNavigation(),
+          else
+            ..._buildDesktopNavigation(),
           if (!isCompactNavigation)
             Padding(
               padding: const EdgeInsets.only(right: 8),
@@ -584,14 +591,13 @@ Bhartiya Sadbhavna Manch stands as a platform committed to nation-building, soci
                                 color: Colors.black54,
                                 onPressed: () {
                                   _pauseVideoAutoScroll();
-                                  final previousIndex =
-                                      (_currentVideoIndex - 1 +
-                                              _allVideos.length) %
-                                          _allVideos.length;
+                                  final previousIndex = (_currentVideoIndex -
+                                          1 +
+                                          _allVideos.length) %
+                                      _allVideos.length;
                                   _videoPageController.animateToPage(
                                     previousIndex,
-                                    duration:
-                                        const Duration(milliseconds: 400),
+                                    duration: const Duration(milliseconds: 400),
                                     curve: Curves.easeInOut,
                                   );
                                 },
@@ -609,13 +615,11 @@ Bhartiya Sadbhavna Manch stands as a platform committed to nation-building, soci
                                 color: Colors.black54,
                                 onPressed: () {
                                   _pauseVideoAutoScroll();
-                                  final nextIndex =
-                                      (_currentVideoIndex + 1) %
-                                          _allVideos.length;
+                                  final nextIndex = (_currentVideoIndex + 1) %
+                                      _allVideos.length;
                                   _videoPageController.animateToPage(
                                     nextIndex,
-                                    duration:
-                                        const Duration(milliseconds: 400),
+                                    duration: const Duration(milliseconds: 400),
                                     curve: Curves.easeInOut,
                                   );
                                 },
@@ -635,11 +639,11 @@ Bhartiya Sadbhavna Manch stands as a platform committed to nation-building, soci
                                 children: List.generate(
                                   _allVideos.length,
                                   (index) => AnimatedContainer(
-                                    duration:
-                                        const Duration(milliseconds: 250),
+                                    duration: const Duration(milliseconds: 250),
                                     margin: const EdgeInsets.symmetric(
                                         horizontal: 6),
-                                    width: _currentVideoIndex == index ? 18 : 10,
+                                    width:
+                                        _currentVideoIndex == index ? 18 : 10,
                                     height: 10,
                                     decoration: BoxDecoration(
                                       color: _currentVideoIndex == index
@@ -883,205 +887,257 @@ Bhartiya Sadbhavna Manch stands as a platform committed to nation-building, soci
           textAlign: TextAlign.center,
         ),
         const SizedBox(height: 60),
-
-        // Contact Form Container
-        Container(
-          constraints: const BoxConstraints(maxWidth: 600),
-          padding: const EdgeInsets.all(40),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(16),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey.withValues(alpha: 0.2),
-                blurRadius: 15,
-                offset: const Offset(0, 8),
+        Wrap(
+          spacing: 60,
+          runSpacing: 40,
+          alignment: WrapAlignment.center,
+          crossAxisAlignment: WrapCrossAlignment.center,
+          children: [
+            // QR Code Image
+            Container(
+              width: 300,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withValues(alpha: 0.2),
+                    blurRadius: 15,
+                    offset: const Offset(0, 8),
+                  ),
+                ],
               ),
-            ],
-          ),
-          child: Form(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                // Name Field
-                Text(
-                  getText('Name', 'नाम'),
-                  style: const TextStyle(
-                      fontSize: 14,
+              child: Column(
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(16),
+                    child: Image.asset(
+                      'assets/images/qr_code.jpeg',
+                      width: 300,
+                      fit: BoxFit.contain,
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    getText('Scan to Connect / Donate',
+                        'जुड़ने / दान करने के लिए स्कैन करें'),
+                    style: const TextStyle(
+                      fontSize: 16,
                       fontWeight: FontWeight.w600,
-                      color: Colors.black87),
-                ),
-                const SizedBox(height: 8),
-                TextField(
-                  controller: _nameController,
-                  decoration: InputDecoration(
-                    hintText: getText(
-                        'Enter your full name', 'अपना पूरा नाम दर्ज करें'),
-                    hintStyle: TextStyle(color: Colors.grey[400]),
-                    filled: true,
-                    fillColor: Colors.grey.shade50,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                      borderSide: BorderSide(color: Colors.grey.shade300),
+                      color: Color.fromARGB(255, 210, 105, 25),
                     ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                      borderSide: BorderSide(color: Colors.grey.shade300),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                      borderSide: const BorderSide(
-                          color: Color.fromARGB(255, 210, 105, 25), width: 2),
-                    ),
-                    contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 16, vertical: 14),
+                    textAlign: TextAlign.center,
                   ),
-                ),
-                const SizedBox(height: 24),
-
-                // Email Field
-                Text(
-                  getText('Email Address', 'ईमेल पता'),
-                  style: const TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.black87),
-                ),
-                const SizedBox(height: 8),
-                TextField(
-                  controller: _emailController,
-                  keyboardType: TextInputType.emailAddress,
-                  decoration: InputDecoration(
-                    hintText: getText(
-                        'Enter your email address', 'अपना ईमेल पता दर्ज करें'),
-                    hintStyle: TextStyle(color: Colors.grey[400]),
-                    filled: true,
-                    fillColor: Colors.grey.shade50,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                      borderSide: BorderSide(color: Colors.grey.shade300),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                      borderSide: BorderSide(color: Colors.grey.shade300),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                      borderSide: const BorderSide(
-                          color: Color.fromARGB(255, 210, 105, 25), width: 2),
-                    ),
-                    contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 16, vertical: 14),
-                  ),
-                ),
-                const SizedBox(height: 24),
-
-                // Phone Number Field
-                Text(
-                  getText('Phone Number', 'फोन नंबर'),
-                  style: const TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.black87),
-                ),
-                const SizedBox(height: 8),
-                TextField(
-                  controller: _phoneController,
-                  keyboardType: TextInputType.phone,
-                  decoration: InputDecoration(
-                    hintText: getText(
-                        'Enter your phone number', 'अपना फोन नंबर दर्ज करें'),
-                    hintStyle: TextStyle(color: Colors.grey[400]),
-                    filled: true,
-                    fillColor: Colors.grey.shade50,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                      borderSide: BorderSide(color: Colors.grey.shade300),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                      borderSide: BorderSide(color: Colors.grey.shade300),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                      borderSide: const BorderSide(
-                          color: Color.fromARGB(255, 210, 105, 25), width: 2),
-                    ),
-                    contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 16, vertical: 14),
-                  ),
-                ),
-                const SizedBox(height: 24),
-
-                // Message Field
-                Text(
-                  getText('Message', 'संदेश'),
-                  style: const TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.black87),
-                ),
-                const SizedBox(height: 8),
-                TextField(
-                  controller: _messageController,
-                  maxLines: 6,
-                  decoration: InputDecoration(
-                    hintText: getText('Tell us more about your inquiry...',
-                        'अपनी जांच के बारे में हमें और बताएं...'),
-                    hintStyle: TextStyle(color: Colors.grey[400]),
-                    filled: true,
-                    fillColor: Colors.grey.shade50,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                      borderSide: BorderSide(color: Colors.grey.shade300),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                      borderSide: BorderSide(color: Colors.grey.shade300),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                      borderSide: const BorderSide(
-                          color: Color.fromARGB(255, 210, 105, 25), width: 2),
-                    ),
-                    contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 16, vertical: 14),
-                  ),
-                ),
-                const SizedBox(height: 32),
-
-                // Submit Button
-                ElevatedButton(
-                  onPressed: _isSubmitting ? null : _handleSubmit,
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    backgroundColor: const Color.fromARGB(255, 210, 105, 25),
-                    disabledBackgroundColor: Colors.grey.shade400,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
-                  child: _isSubmitting
-                      ? SizedBox(
-                          height: 20,
-                          width: 20,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            valueColor: AlwaysStoppedAnimation<Color>(
-                                Colors.white.withValues(alpha: 0.8)),
-                          ),
-                        )
-                      : Text(
-                          getText('Send Message', 'संदेश भेजें'),
-                          style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.white),
-                        ),
-                ),
-              ],
+                  const SizedBox(height: 10),
+                ],
+              ),
             ),
-          ),
+
+            // Contact Form Container
+            Container(
+              constraints: const BoxConstraints(maxWidth: 600),
+              padding: const EdgeInsets.all(40),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withValues(alpha: 0.2),
+                    blurRadius: 15,
+                    offset: const Offset(0, 8),
+                  ),
+                ],
+              ),
+              child: Form(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    // Name Field
+                    Text(
+                      getText('Name', 'नाम'),
+                      style: const TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.black87),
+                    ),
+                    const SizedBox(height: 8),
+                    TextField(
+                      controller: _nameController,
+                      decoration: InputDecoration(
+                        hintText: getText(
+                            'Enter your full name', 'अपना पूरा नाम दर्ज करें'),
+                        hintStyle: TextStyle(color: Colors.grey[400]),
+                        filled: true,
+                        fillColor: Colors.grey.shade50,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: BorderSide(color: Colors.grey.shade300),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: BorderSide(color: Colors.grey.shade300),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: const BorderSide(
+                              color: Color.fromARGB(255, 210, 105, 25),
+                              width: 2),
+                        ),
+                        contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 14),
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+
+                    // Email Field
+                    Text(
+                      getText('Email Address', 'ईमेल पता'),
+                      style: const TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.black87),
+                    ),
+                    const SizedBox(height: 8),
+                    TextField(
+                      controller: _emailController,
+                      keyboardType: TextInputType.emailAddress,
+                      decoration: InputDecoration(
+                        hintText: getText('Enter your email address',
+                            'अपना ईमेल पता दर्ज करें'),
+                        hintStyle: TextStyle(color: Colors.grey[400]),
+                        filled: true,
+                        fillColor: Colors.grey.shade50,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: BorderSide(color: Colors.grey.shade300),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: BorderSide(color: Colors.grey.shade300),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: const BorderSide(
+                              color: Color.fromARGB(255, 210, 105, 25),
+                              width: 2),
+                        ),
+                        contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 14),
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+
+                    // Phone Number Field
+                    Text(
+                      getText('Phone Number', 'फोन नंबर'),
+                      style: const TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.black87),
+                    ),
+                    const SizedBox(height: 8),
+                    TextField(
+                      controller: _phoneController,
+                      keyboardType: TextInputType.phone,
+                      decoration: InputDecoration(
+                        hintText: getText('Enter your phone number',
+                            'अपना फोन नंबर दर्ज करें'),
+                        hintStyle: TextStyle(color: Colors.grey[400]),
+                        filled: true,
+                        fillColor: Colors.grey.shade50,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: BorderSide(color: Colors.grey.shade300),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: BorderSide(color: Colors.grey.shade300),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: const BorderSide(
+                              color: Color.fromARGB(255, 210, 105, 25),
+                              width: 2),
+                        ),
+                        contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 14),
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+
+                    // Message Field
+                    Text(
+                      getText('Message', 'संदेश'),
+                      style: const TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.black87),
+                    ),
+                    const SizedBox(height: 8),
+                    TextField(
+                      controller: _messageController,
+                      maxLines: 6,
+                      decoration: InputDecoration(
+                        hintText: getText('Tell us more about your inquiry...',
+                            'अपनी जांच के बारे में हमें और बताएं...'),
+                        hintStyle: TextStyle(color: Colors.grey[400]),
+                        filled: true,
+                        fillColor: Colors.grey.shade50,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: BorderSide(color: Colors.grey.shade300),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: BorderSide(color: Colors.grey.shade300),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: const BorderSide(
+                              color: Color.fromARGB(255, 210, 105, 25),
+                              width: 2),
+                        ),
+                        contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 14),
+                      ),
+                    ),
+                    const SizedBox(height: 32),
+
+                    // Submit Button
+                    ElevatedButton(
+                      onPressed: _isSubmitting ? null : _handleSubmit,
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        backgroundColor:
+                            const Color.fromARGB(255, 210, 105, 25),
+                        disabledBackgroundColor: Colors.grey.shade400,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                      child: _isSubmitting
+                          ? SizedBox(
+                              height: 20,
+                              width: 20,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                    Colors.white.withValues(alpha: 0.8)),
+                              ),
+                            )
+                          : Text(
+                              getText('Send Message', 'संदेश भेजें'),
+                              style: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.white),
+                            ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
         ),
       ],
     );
@@ -1158,8 +1214,7 @@ Bhartiya Sadbhavna Manch stands as a platform committed to nation-building, soci
         setState(() => _isSubmitting = false);
         final errorMessage = e.toString();
         _showSnackBar(
-          '${getText('Error sending message. Please try again.',
-                  'संदेश भेजने में त्रुटि। कृपया पुनः प्रयास करें।')}\n$errorMessage',
+          '${getText('Error sending message. Please try again.', 'संदेश भेजने में त्रुटि। कृपया पुनः प्रयास करें।')}\n$errorMessage',
         );
         debugPrint('EmailJS Error: $e');
       }
