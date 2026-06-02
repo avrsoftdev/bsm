@@ -33,7 +33,7 @@ void registerMP4View(String videoPath, {void Function()? onTap}) {
   ui_web.platformViewRegistry.registerViewFactory(
     viewType,
     (int viewId) {
-      final assetUrl = Uri.base.resolve(videoPath).toString();
+      final assetUrl = Uri.base.resolve('assets/$videoPath').toString();
       final videoElement = html.VideoElement()
         ..controls = true
         ..preload = 'metadata'

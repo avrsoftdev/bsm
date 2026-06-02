@@ -167,42 +167,20 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildCompactNavigationMenu() {
-    return PopupMenuButton<String>(
+    return PopupMenuButton<GlobalKey>(
       icon: const Icon(Icons.menu),
       tooltip: getText('Open navigation menu', 'नेविगेशन मेनू खोलें'),
-      onSelected: (value) {
-        switch (value) {
-          case 'home':
-            _scrollToSection(_homeKey);
-            break;
-          case 'history':
-            _scrollToSection(_historyKey);
-            break;
-          case 'members':
-            _scrollToSection(_membersKey);
-            break;
-          case 'videos':
-            _scrollToSection(_videosKey);
-            break;
-          case 'contact':
-            _scrollToSection(_contactKey);
-            break;
-          case 'donate':
-            _launchDonateUrl();
-            break;
-        }
-      },
+      onSelected: _scrollToSection,
       itemBuilder: (_) => [
-        PopupMenuItem(value: 'home', child: Text(getText('Home', 'होम'))),
-        PopupMenuItem(value: 'history', child: Text(getText('History', 'इतिहास'))),
-        PopupMenuItem(value: 'members', child: Text(getText('Members', 'सदस्य'))),
-        PopupMenuItem(value: 'videos', child: Text(getText('Videos', 'वीडियो'))),
-        PopupMenuItem(value: 'contact', child: Text(getText('Contact', 'संपर्क'))),
-        const PopupMenuDivider(),
+        PopupMenuItem(value: _homeKey, child: Text(getText('Home', 'होम'))),
         PopupMenuItem(
-          value: 'donate',
-          child: Text(getText('Donate now', 'अब दान करें')),
-        ),
+            value: _historyKey, child: Text(getText('History', 'इतिहास'))),
+        PopupMenuItem(
+            value: _membersKey, child: Text(getText('Members', 'सदस्य'))),
+        PopupMenuItem(
+            value: _videosKey, child: Text(getText('Videos', 'वीडियो'))),
+        PopupMenuItem(
+            value: _contactKey, child: Text(getText('Contact', 'संपर्क'))),
       ],
     );
   }
@@ -233,6 +211,15 @@ class _HomePageState extends State<HomePage> {
     for (final videoPath in _mp4Videos) {
       _registerMP4View(videoPath);
     }
+    _videoAutoScrollTimer = Timer.periodic(const Duration(seconds: 3), (_) {
+      if (!_videoPageController.hasClients || !mounted) return;
+      final nextIndex = (_currentVideoIndex + 1) % _allVideos.length;
+      _videoPageController.animateToPage(
+        nextIndex,
+        duration: const Duration(milliseconds: 400),
+        curve: Curves.easeInOut,
+      );
+    });
     // Start the marquee after first frame so the controller has dimensions
     WidgetsBinding.instance.addPostFrameCallback((_) => _startMarquee());
   }
@@ -246,6 +233,7 @@ class _HomePageState extends State<HomePage> {
     _scrollController.dispose();
     _marqueeController.dispose();
     _videoPageController.dispose();
+    _videoAutoScrollTimer?.cancel();
     super.dispose();
   }
 
@@ -294,19 +282,8 @@ class _HomePageState extends State<HomePage> {
           ),
           if (isCompactNavigation)
             _buildCompactNavigationMenu()
-          else ..._buildDesktopNavigation(),
-          if (!isCompactNavigation) ...[
-            TextButton(
-              onPressed: _launchDonateUrl,
-              style: TextButton.styleFrom(
-                backgroundColor: const Color.fromARGB(255, 210, 105, 25),
-                foregroundColor: Colors.white,
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
-              ),
-              child: Text(getText('Donate now', 'अब दान करें')),
-            ),
-          ],
+          else
+            ..._buildDesktopNavigation(),
           const SizedBox(width: 16),
         ],
       ),
