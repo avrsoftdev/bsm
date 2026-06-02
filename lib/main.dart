@@ -819,6 +819,10 @@ Bhartiya Sadbhavna Manch stands as a platform committed to nation-building, soci
     );
   }
 
+  String _mp4ViewType(String videoPath) {
+    return 'mp4-${videoPath.replaceAll(RegExp(r'[^a-zA-Z0-9_-]'), '_')}';
+  }
+
   // MP4 Video Widget
   Widget _buildMP4Video(String videoPath,
       {double width = 420, void Function()? onTap}) {
@@ -834,7 +838,7 @@ Bhartiya Sadbhavna Manch stands as a platform committed to nation-building, soci
           borderRadius: BorderRadius.circular(12),
           child: AspectRatio(
             aspectRatio: 16 / 9,
-            child: HtmlElementView(viewType: 'mp4-${videoPath.hashCode}'),
+            child: HtmlElementView(viewType: _mp4ViewType(videoPath)),
           ),
         ),
       ),

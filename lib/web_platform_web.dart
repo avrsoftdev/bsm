@@ -24,21 +24,30 @@ void registerYouTubeView(String videoId, {void Function()? onTap}) {
   );
 }
 
+String _mp4ViewType(String videoPath) {
+  return 'mp4-${videoPath.replaceAll(RegExp(r'[^a-zA-Z0-9_-]'), '_')}';
+}
+
 void registerMP4View(String videoPath, {void Function()? onTap}) {
-  final viewType = 'mp4-${videoPath.hashCode}';
+  final viewType = _mp4ViewType(videoPath);
   ui_web.platformViewRegistry.registerViewFactory(
     viewType,
     (int viewId) {
+      final assetUrl = Uri.base.resolve(videoPath).toString();
       final videoElement = html.VideoElement()
         ..controls = true
+        ..preload = 'metadata'
+        ..setAttribute('playsinline', 'true')
         ..style.width = '100%'
         ..style.height = '100%'
         ..style.objectFit = 'contain'
-        ..src = videoPath;
+        ..style.backgroundColor = 'black'
+        ..src = assetUrl;
       if (onTap != null) {
         videoElement.onMouseDown.listen((_) => onTap());
         videoElement.onFocus.listen((_) => onTap());
       }
+      videoElement.load();
       return videoElement;
     },
   );
