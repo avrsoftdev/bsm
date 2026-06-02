@@ -167,22 +167,49 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildCompactNavigationMenu() {
-    return PopupMenuButton<GlobalKey>(
+    return PopupMenuButton<String>(
       icon: const Icon(Icons.menu),
       tooltip: getText('Open navigation menu', 'नेविगेशन मेनू खोलें'),
-      onSelected: _scrollToSection,
+      onSelected: _handleCompactMenuSelection,
       itemBuilder: (_) => [
-        PopupMenuItem(value: _homeKey, child: Text(getText('Home', 'होम'))),
+        PopupMenuItem(value: 'home', child: Text(getText('Home', 'होम'))),
+        PopupMenuItem(value: 'history', child: Text(getText('History', 'इतिहास'))),
+        PopupMenuItem(value: 'members', child: Text(getText('Members', 'सदस्य'))),
+        PopupMenuItem(value: 'videos', child: Text(getText('Videos', 'वीडियो'))),
+        PopupMenuItem(value: 'contact', child: Text(getText('Contact', 'संपर्क'))),
+        const PopupMenuDivider(),
         PopupMenuItem(
-            value: _historyKey, child: Text(getText('History', 'इतिहास'))),
-        PopupMenuItem(
-            value: _membersKey, child: Text(getText('Members', 'सदस्य'))),
-        PopupMenuItem(
-            value: _videosKey, child: Text(getText('Videos', 'वीडियो'))),
-        PopupMenuItem(
-            value: _contactKey, child: Text(getText('Contact', 'संपर्क'))),
+          value: 'donate',
+          child: Text(
+            getText('Donate Now', 'अभी दान करें'),
+            style: const TextStyle(color: Color.fromARGB(255, 210, 105, 25)),
+          ),
+        ),
       ],
     );
+  }
+
+  void _handleCompactMenuSelection(String value) {
+    switch (value) {
+      case 'home':
+        _scrollToSection(_homeKey);
+        break;
+      case 'history':
+        _scrollToSection(_historyKey);
+        break;
+      case 'members':
+        _scrollToSection(_membersKey);
+        break;
+      case 'videos':
+        _scrollToSection(_videosKey);
+        break;
+      case 'contact':
+        _scrollToSection(_contactKey);
+        break;
+      case 'donate':
+        _launchDonateUrl();
+        break;
+    }
   }
 
   // Register YouTube Video for Web
@@ -282,8 +309,25 @@ class _HomePageState extends State<HomePage> {
           ),
           if (isCompactNavigation)
             _buildCompactNavigationMenu()
-          else
-            ..._buildDesktopNavigation(),
+          else ..._buildDesktopNavigation(),
+          if (!isCompactNavigation)
+            Padding(
+              padding: const EdgeInsets.only(right: 8),
+              child: ElevatedButton(
+                onPressed: _launchDonateUrl,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color.fromARGB(255, 210, 105, 25),
+                  foregroundColor: Colors.white,
+                  elevation: 0,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                ),
+                child: Text(getText('Donate Now', 'अभी दान करें')),
+              ),
+            ),
           const SizedBox(width: 16),
         ],
       ),
