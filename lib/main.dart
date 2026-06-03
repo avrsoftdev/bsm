@@ -135,10 +135,27 @@ class _HomePageState extends State<HomePage> {
   Future<void> _launchDonateUrl() async {
     final uri = Uri.parse('https://jumpshare.com/share/sbn0Xer61Pfz4iGcFcxw');
     if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
             content: Text(getText('Could not open Donate link.',
                 'डोनेट लिंक खोलने में असमर्थ।'))),
+      );
+    }
+  }
+
+  Future<void> _launchOrganizationProfileReportUrl() async {
+    final uri = Uri.parse(
+        'https://drive.google.com/file/d/1Dyf7linvtusYdId5gl5vs_-bz8hhYxud/view?usp=sharing');
+    if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            getText('Could not open report link.',
+                'रिपोर्ट लिंक खोलने में असमर्थ।'),
+          ),
+        ),
       );
     }
   }
@@ -461,10 +478,43 @@ Bhartiya Sadbhavna Manch stands as a platform committed to nation-building, soci
             // Members Section
             Container(
               key: _membersKey,
-              padding: const EdgeInsets.symmetric(vertical: 80, horizontal: 40),
+              padding: const EdgeInsets.only(top: 4, bottom: 40, left: 40, right: 40),
               color: Colors.grey.shade50,
               child: Column(
                 children: [
+                  Center(
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: 760),
+                      child: ElevatedButton.icon(
+                        onPressed: _launchOrganizationProfileReportUrl,
+                        icon: const Icon(Icons.download_rounded, size: 18),
+                        label: Text(
+                          getText(
+                            'Download BSM Activities Report',
+                            'संगठन प्रोफाइल तथा गतिविधियों की रिपोर्ट डाउनलोड करें',
+                          ),
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 14,
+                          ),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 18, vertical: 12),
+                          backgroundColor:
+                              const Color.fromARGB(255, 210, 105, 25),
+                          foregroundColor: Colors.white,
+                          elevation: 2,
+                          shadowColor: const Color.fromARGB(77, 210, 105, 25),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 8),
                   Text(
                     getText('Our Team / Post Holders', 'हमारी टीम / पदाधिकारी'),
                     style: const TextStyle(
@@ -476,7 +526,7 @@ Bhartiya Sadbhavna Manch stands as a platform committed to nation-building, soci
                         'सामाजिक सद्भावना के लिए समर्पित हमारे नेतृत्व'),
                     style: const TextStyle(fontSize: 18, color: Colors.black54),
                   ),
-                  const SizedBox(height: 50),
+                  const SizedBox(height: 40),
                   Wrap(
                     spacing: 25,
                     runSpacing: 30,
