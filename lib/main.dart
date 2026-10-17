@@ -160,6 +160,11 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  Future<void> _launchMembershipRegistrationUrl() async {
+    final uri = Uri.parse('https://forms.gle/WPSAa97pkCytwmZR9');
+    await launchUrl(uri, mode: LaunchMode.externalApplication);
+  }
+
   List<Widget> _buildDesktopNavigation() {
     return [
       TextButton(
@@ -511,6 +516,27 @@ Bhartiya Sadbhavna Manch stands as a platform committed to nation-building, soci
                             borderRadius: BorderRadius.circular(12),
                           ),
                         ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  ElevatedButton.icon(
+                    onPressed: _launchMembershipRegistrationUrl,
+                    icon: const Icon(Icons.app_registration_rounded, size: 18),
+                    label: const Text(
+                      'BSM Mmembership registration form',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 18, vertical: 12),
+                      backgroundColor: const Color.fromARGB(255, 210, 105, 25),
+                      foregroundColor: Colors.white,
+                      elevation: 2,
+                      shadowColor: const Color.fromARGB(77, 210, 105, 25),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
                       ),
                     ),
                   ),
