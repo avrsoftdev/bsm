@@ -339,6 +339,25 @@ class _HomePageState extends State<HomePage> {
             _buildCompactNavigationMenu()
           else
             ..._buildDesktopNavigation(),
+          Padding(
+            padding: EdgeInsets.only(left: 4, right: isCompactNavigation ? 4 : 8),
+            child: ElevatedButton(
+              onPressed: _launchMembershipRegistrationUrl,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color.fromARGB(255, 210, 105, 25),
+                foregroundColor: Colors.white,
+                elevation: 0,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                padding: EdgeInsets.symmetric(
+                  horizontal: isCompactNavigation ? 10 : 16,
+                  vertical: 12,
+                ),
+              ),
+              child: const Text('Join Us'),
+            ),
+          ),
           if (!isCompactNavigation)
             Padding(
               padding: const EdgeInsets.only(right: 8),
