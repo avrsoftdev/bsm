@@ -298,17 +298,19 @@ class _HomePageState extends State<HomePage> {
 
     return Scaffold(
       appBar: AppBar(
+        toolbarHeight: 88,
+        leadingWidth: 80,
         leading: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Image.asset(
-            'assets/images/bsm_logo.jpeg',
-            width: 36,
-            height: 36,
+            'assets/images/bsm_logo.png',
+            width: 64,
+            height: 64,
             fit: BoxFit.contain,
             errorBuilder: (context, error, stackTrace) => Image.asset(
-              'assets/images/bsm_logo.jpeg',
-              width: 36,
-              height: 36,
+              'assets/images/bsm_logo.png',
+              width: 64,
+              height: 64,
               fit: BoxFit.contain,
             ),
           ),
