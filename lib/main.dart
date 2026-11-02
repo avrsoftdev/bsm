@@ -301,12 +301,12 @@ class _HomePageState extends State<HomePage> {
         leading: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Image.asset(
-            'assets/images/bsm_logo.png',
+            'assets/images/bsm_logo.jpeg',
             width: 36,
             height: 36,
             fit: BoxFit.contain,
             errorBuilder: (context, error, stackTrace) => Image.asset(
-              'assets/images/bsm_logo.png',
+              'assets/images/bsm_logo.jpeg',
               width: 36,
               height: 36,
               fit: BoxFit.contain,
@@ -340,7 +340,8 @@ class _HomePageState extends State<HomePage> {
           else
             ..._buildDesktopNavigation(),
           Padding(
-            padding: EdgeInsets.only(left: 4, right: isCompactNavigation ? 4 : 8),
+            padding:
+                EdgeInsets.only(left: 4, right: isCompactNavigation ? 4 : 8),
             child: ElevatedButton(
               onPressed: _launchMembershipRegistrationUrl,
               style: ElevatedButton.styleFrom(
@@ -502,7 +503,8 @@ Bhartiya Sadbhavna Manch stands as a platform committed to nation-building, soci
             // Members Section
             Container(
               key: _membersKey,
-              padding: const EdgeInsets.only(top: 4, bottom: 40, left: 40, right: 40),
+              padding: const EdgeInsets.only(
+                  top: 4, bottom: 40, left: 40, right: 40),
               color: Colors.grey.shade50,
               child: Column(
                 children: [
@@ -545,7 +547,8 @@ Bhartiya Sadbhavna Manch stands as a platform committed to nation-building, soci
                     label: const Text(
                       'BSM Mmembership registration form',
                       textAlign: TextAlign.center,
-                      style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
+                      style:
+                          TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
                     ),
                     style: ElevatedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(
