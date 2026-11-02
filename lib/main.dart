@@ -301,12 +301,12 @@ class _HomePageState extends State<HomePage> {
         leading: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Image.asset(
-            'assets/images/logo.jpeg',
+            'assets/images/bsm_logo.png',
             width: 36,
             height: 36,
             fit: BoxFit.contain,
             errorBuilder: (context, error, stackTrace) => Image.asset(
-              'assets/images/logo.jpeg',
+              'assets/images/bsm_logo.png',
               width: 36,
               height: 36,
               fit: BoxFit.contain,
